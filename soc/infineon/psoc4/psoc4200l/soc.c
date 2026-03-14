@@ -35,13 +35,17 @@ extern char _psoc4_sram_vectors_start[];
  */
 void relocate_vector_table(void)
 {
-	size_t vector_size = (size_t)_vector_end - (size_t)_vector_start;
-
-	/* Copy vector table from Flash to reserved SRAM area (0x20000000) */
-	(void)memcpy(_psoc4_sram_vectors_start, _vector_start, vector_size);
-
-	/* Tell CPUSS hardware to fetch vectors from SRAM */
-	CPUSS_CONFIG_REG |= CPUSS_CONFIG_VECT_IN_RAM_Msk;
+	/*
+	 * For initial bring-up: do NOT relocate vectors to SRAM.
+	 * Leave CPUSS_CONFIG.VECT_IN_RAM = 0 so the CPU uses the Flash
+	 * vector table at 0x00000000. This is safe for basic operation;
+	 * dynamic ISR installation will not work until SRAM relocation
+	 * is properly implemented.
+	 *
+	 * Ensure VECT_IN_RAM is cleared (reset default should be 0,
+	 * but clear it explicitly in case a previous debug session set it).
+	 */
+	CPUSS_CONFIG_REG &= ~CPUSS_CONFIG_VECT_IN_RAM_Msk;
 }
 
 /*
