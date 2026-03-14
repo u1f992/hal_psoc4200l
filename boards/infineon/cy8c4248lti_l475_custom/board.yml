@@ -1,0 +1,6 @@
+board:
+  name: cy8c4248lti_l475_custom
+  full_name: PSoC 4200L Custom Board (CY8C4248LTI-L475)
+  vendor: infineon
+  socs:
+  - name: cy8c4248lti_l475

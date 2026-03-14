@@ -1,0 +1,17 @@
+# Copyright (c) 2025 PSoC 4200L Zephyr Port
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_PACKAGE_PSOC4200L_68_QFN
+	bool
+
+config SOC_SERIES_PSOC4200L
+	select ARM
+	select CPU_CORTEX_M0
+	select BUILD_OUTPUT_HEX
+	select BUILD_OUTPUT_BIN
+	select DYNAMIC_INTERRUPTS
+	select SOC_EARLY_INIT_HOOK
+	select CPU_CORTEX_M_HAS_SYSTICK
+
+config SOC_CY8C4248LTI_L475
+	select SOC_PACKAGE_PSOC4200L_68_QFN

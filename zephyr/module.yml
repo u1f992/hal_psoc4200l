@@ -1,0 +1,9 @@
+name: hal_psoc4200l
+build:
+  cmake: zephyr
+  kconfig: zephyr/Kconfig
+  settings:
+    board_root: .
+    soc_root: .
+    dts_root: .
+    module_ext_root: .

@@ -1,0 +1,53 @@
+--- /home/mukai/Documents/psoc/resources/hal_infineon/mtb-pdl-cat2/drivers/include/cy_device.h	2026-03-13 19:29:35.907310265 +0900
++++ /home/mukai/Documents/psoc/resources/modules/hal/infineon/mtb-pdl-cat2/drivers/include/cy_device.h	2026-03-14 17:07:05.554297395 +0900
+@@ -56,6 +56,11 @@
+     #define SRSS SRSSHV
+     /* Macros to concatenate register definitions (SRSSHV_CLK_SELECT). */
+     #define SRSS_CONCAT(param)    SRSSHV_ ## param
++#elif defined(CY_IP_M0S8SRSS)
++    #define SRSS_Type SRSS_V2_Type
++    #define SRSS SRSS_V2
++    /* Macros to concatenate register definitions (SRSS_V2_CLK_SELECT). */
++    #define SRSS_CONCAT(param)    SRSS_V2_ ## param
+ #endif /* defined(CY_IP_S8SRSSLT) */
+ 
+ #define SRSS_PWR_CONTROL                    (((SRSS_Type *) SRSS)->PWR_CONTROL)
+--- /home/mukai/Documents/psoc/resources/hal_infineon/mtb-pdl-cat2/drivers/include/cy_syslib.h	2026-03-13 19:29:35.910306142 +0900
++++ /home/mukai/Documents/psoc/resources/modules/hal/infineon/mtb-pdl-cat2/drivers/include/cy_syslib.h	2026-03-14 17:12:50.172987320 +0900
+@@ -416,14 +416,14 @@
+ * \{
+ * Define RESET_CAUSE mask values
+ */
+-#if defined(CY_IP_S8SRSSLT) || defined(CY_IP_M0S8SRSSHV)
++#if defined(CY_IP_S8SRSSLT) || defined(CY_IP_M0S8SRSSHV) || defined(CY_IP_M0S8SRSS)
+     /** A basic WatchDog Timer (WDT) reset has occurred since the last power cycle. */
+     #define CY_SYSLIB_RESET_HWWDT           SRSS_CONCAT(RES_CAUSE_RESET_WDT_Msk)
+     /** A protection violation occurred that requires a reset */
+     #define CY_SYSLIB_PROT_FAULT            SRSS_CONCAT(RES_CAUSE_RESET_PROT_FAULT_Msk)
+     /** The CPU requested a system reset through it's SYSRESETREQ. This can be done via a debugger probe or in firmware. */
+     #define CY_SYSLIB_RESET_SOFT            SRSS_CONCAT(RES_CAUSE_RESET_SOFT_Msk)
+-#endif /* defined(CY_IP_S8SRSSLT) || defined(CY_IP_M0S8SRSSHV) */
++#endif /* defined(CY_IP_S8SRSSLT) || defined(CY_IP_M0S8SRSSHV) || defined(CY_IP_M0S8SRSS) */
+ #if defined(CY_IP_M0S8SRSSHV)
+     /** Reset caused by the Fault Infrastructure.
+      * \note Only applicable for PSOC 4 HVMS/PA devices. */
+@@ -457,7 +457,7 @@
+ #endif /* defined(CY_IP_M0S8SRSSHV) */
+ 
+ /** \cond INTERNAL */
+-#if defined(CY_IP_S8SRSSLT)
++#if defined(CY_IP_S8SRSSLT) || defined(CY_IP_M0S8SRSS)
+     /** Define Reset Reason mask */
+     #define CY_SYSLIB_RESET_REASON_MASK    (CY_SYSLIB_RESET_HWWDT | CY_SYSLIB_PROT_FAULT | CY_SYSLIB_RESET_SOFT)
+ #elif defined(CY_IP_M0S8SRSSHV)
+--- /home/mukai/Documents/psoc/resources/hal_infineon/mtb-pdl-cat2/drivers/source/cy_sysclk.c	2026-03-13 19:29:35.915306238 +0900
++++ /home/mukai/Documents/psoc/resources/modules/hal/infineon/mtb-pdl-cat2/drivers/source/cy_sysclk.c	2026-03-14 17:15:17.987041722 +0900
+@@ -169,7 +169,7 @@
+                                         (CY_SYSCLK_IMO_44MHZ == (freq)) || \
+                                         (CY_SYSCLK_IMO_48MHZ == (freq)) || \
+                                         (CY_SYSCLK_IMO_49_152MHZ == (freq)))
+-#elif defined (CY_IP_S8SRSSLT)
++#elif defined (CY_IP_S8SRSSLT) || defined (CY_IP_M0S8SRSS)
+ #define CY_SYSCLK_IS_FREQ_VALID(freq)  ((CY_SYSCLK_IMO_24MHZ == (freq)) || \
+                                         (CY_SYSCLK_IMO_28MHZ == (freq)) || \
+                                         (CY_SYSCLK_IMO_32MHZ == (freq)) || \

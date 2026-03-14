@@ -1,0 +1,5 @@
+# Copyright (c) 2025 PSoC 4200L Zephyr Port
+# SPDX-License-Identifier: Apache-2.0
+
+config BOARD_CY8C4248LTI_L475_CUSTOM
+	select SOC_CY8C4248LTI_L475

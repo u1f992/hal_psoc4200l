@@ -1,0 +1,7 @@
+/*
+ * Copyright (c) 2025 PSoC 4200L Zephyr Port
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/* CY8C4248LTI-L475: 68-QFN package, 256KB Flash, 32KB SRAM */
+#include "../psoc4200l/psoc4200l.68-qfn.dtsi"

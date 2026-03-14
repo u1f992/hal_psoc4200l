@@ -1,0 +1,19 @@
+# Copyright (c) 2025 PSoC 4200L Zephyr Port
+# SPDX-License-Identifier: Apache-2.0
+
+# MCU series
+config SOC_SERIES_PSOC4200L
+	bool
+	select SOC_FAMILY_INFINEON_PSOC4
+	help
+	  PSoC 4200L Series MCU (ARM Cortex-M0)
+
+config SOC_SERIES
+	default "psoc4200l" if SOC_SERIES_PSOC4200L
+
+config SOC_CY8C4248LTI_L475
+	bool
+	select SOC_SERIES_PSOC4200L
+
+config SOC
+	default "cy8c4248lti_l475" if SOC_CY8C4248LTI_L475
