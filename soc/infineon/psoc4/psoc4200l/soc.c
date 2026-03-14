@@ -13,14 +13,21 @@
  * Vector table relocation is done via CPUSS_CONFIG.VECT_IN_RAM bit.
  * When set, the CPU fetches exception vectors from SRAM base (0x20000000)
  * instead of Flash base (0x00000000).
+ *
+ * The linker script (sections.ld) reserves 256 bytes at the start of SRAM
+ * for the vector table copy. relocate_vector_table() copies the flash vector
+ * table there and sets the CPUSS_CONFIG bit.
  */
 
 #define CPUSS_CONFIG_REG    (*(volatile uint32_t *)0x40100000u)
 #define CPUSS_CONFIG_VECT_IN_RAM_Msk (0x01u)
 
-/* Symbols from linker script */
+/* Flash vector table symbols from Zephyr linker */
 extern char _vector_start[];
 extern char _vector_end[];
+
+/* SRAM vector table reservation from sections.ld */
+extern char _psoc4_sram_vectors_start[];
 
 /*
  * Override the __weak relocate_vector_table() from arch/arm/core/cortex_m/prep_c.c.
@@ -30,8 +37,8 @@ void relocate_vector_table(void)
 {
 	size_t vector_size = (size_t)_vector_end - (size_t)_vector_start;
 
-	/* Copy vector table from Flash to SRAM base */
-	(void)memcpy((void *)CONFIG_SRAM_BASE_ADDRESS, _vector_start, vector_size);
+	/* Copy vector table from Flash to reserved SRAM area (0x20000000) */
+	(void)memcpy(_psoc4_sram_vectors_start, _vector_start, vector_size);
 
 	/* Tell CPUSS hardware to fetch vectors from SRAM */
 	CPUSS_CONFIG_REG |= CPUSS_CONFIG_VECT_IN_RAM_Msk;
@@ -39,7 +46,6 @@ void relocate_vector_table(void)
 
 /*
  * Early SoC initialization. Called before kernel starts.
- * Sets up IMO clock to 48 MHz (default after reset is 24 MHz on PSoC 4200L).
  */
 void soc_early_init_hook(void)
 {
